@@ -84,6 +84,18 @@
 import axios from 'axios'
 export default {
   name: 'IndexPage',
+  head(){
+    return{
+      title: 'Movie App - Latest Streaming Movie Info',
+      meta:[
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'DevAdedeji Movie App'
+        }
+        ]
+    }
+  },
   data(){
     return{
       movies:[],

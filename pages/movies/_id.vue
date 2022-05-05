@@ -51,9 +51,21 @@ import axios from 'axios'
 import Loading from '../../components/Loading.vue'
 export default {
   components: { Loading },
+  head(){
+      return{
+          title: this.movie.title,
+          meta:[
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'DevAdedeji Movie App'
+        }
+        ]
+      }
+  },
     data(){
         return{
-           movie: null,
+           movie: '',
         }
     },
     async fetch(){
