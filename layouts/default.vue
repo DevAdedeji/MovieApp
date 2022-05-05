@@ -1,5 +1,13 @@
 <template>
     <div class="app">
-        <Nuxt />
+        <Nuxt keep-alive />
     </div>
 </template>
+
+<script>
+
+
+export default {
+    name:'DV'
+}
+</script>

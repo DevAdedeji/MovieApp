@@ -3,8 +3,8 @@
     <Hero />
     <!-- Search -->
     <div class="container search">
-      <input  v-model="searchInput" type="text" placeholder="Search">
-      <button class="button" v-show="searchInput !==''" @click="$fetch">Search</button>
+      <input @input="sortMovies" v-model="searchInput" type="text" placeholder="Search">
+      <button class="button" v-show="searchInput !==''" @click="$fetch" >Search</button>
     </div>
 
     <!-- Loading -->
@@ -13,7 +13,7 @@
   <!-- Movies -->
   <div class="container movies">
     <!-- Searched Movies -->
-    <div v-if="searchInput !== ''" id="movie-grid" class="movies-grid">
+    <div v-if="showSearchedMovies" id="movie-grid" class="movies-grid">
       <div v-for="movie in searchedMovies"  :key="movie.id" class="movie" >
         <div class="movie-img">
           <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="">
@@ -34,7 +34,7 @@
     </div>
 
     <!-- Now Streaming Movies -->
-    <div v-else id="movie-grid" class="movies-grid">
+<div v-if="showMovies" id="movie-grid" class="movies-grid">
       <div v-for="movie in movies"  :key="movie.id" class="movie" >
         <div class="movie-img">
           <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="">
@@ -64,13 +64,15 @@ export default {
   data(){
     return{
       movies:[],
+      showMovies:true,
       searchInput: '',
       searchedMovies: [], 
+      showSearchedMovies:false
     }
   },
   async fetch(){
     this.searchInput === '' ? await this.getMovies() : await this.searchMovie()   
-  },
+  },  
   methods:{
     async getMovies(){
       const data = await axios.get('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=804a74ac9a1ab71039c990f01ef39b23&page=1')
@@ -79,7 +81,15 @@ export default {
     async searchMovie(){
       const data = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=804a74ac9a1ab71039c990f01ef39b23&query=${this.searchInput}`)
       this.searchedMovies = data.data.results
+      this.showMovies = false
+      this.showSearchedMovies = true
+    },
+    sortMovies(){
+    if(this.searchInput === ''){
+      this.showMovies = true
+      this.showSearchedMovies = false
     }
+  },
   }
 }
 </script>
