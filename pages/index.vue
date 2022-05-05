@@ -6,7 +6,11 @@
       <input  v-model="searchInput" type="text" placeholder="Search">
       <button class="button" v-show="searchInput !==''" @click="$fetch">Search</button>
     </div>
-    <!-- Movies -->
+
+    <!-- Loading -->
+    <Loading v-if="$fetchState.pending"/>
+
+  <!-- Movies -->
   <div class="container movies">
     <!-- Searched Movies -->
     <div v-if="searchInput !== ''" id="movie-grid" class="movies-grid">
@@ -65,7 +69,7 @@ export default {
     }
   },
   async fetch(){
-    this.searchInput === ''? await this.getMovies() : await this.searchMovie()   
+    this.searchInput === '' ? await this.getMovies() : await this.searchMovie()   
   },
   methods:{
     async getMovies(){
