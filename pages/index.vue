@@ -34,7 +34,7 @@
     </div>
 
     <!-- Now Streaming Movies -->
-<div v-if="showMovies" id="movie-grid" class="movies-grid">
+    <div v-if="showMovies" id="movie-grid" class="movies-grid">
       <div v-for="movie in movies"  :key="movie.id" class="movie" >
         <div class="movie-img">
           <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="">
@@ -53,6 +53,29 @@
         </div>
       </div>
     </div>
+
+    <!-- Dramas -->
+    <h1 v-if="showMovies" style="color:#fff; padding:30px 0;">New Dramas</h1>
+        <div v-if="showMovies" id="movie-grid" class="movies-grid">
+          
+      <div v-for="drama in dramas"  :key="drama.id" class="movie" >
+        <div class="movie-img">
+          <img :src="`https://image.tmdb.org/t/p/w500/${drama.poster_path}`" alt="">
+          <p class="review">{{drama.vote_average}}</p>
+          <p class="overview">{{drama.overview}}</p>
+        </div>
+        <div class="info">
+          <p class="title">{{drama.title.slice(0,25)}} <span v-if="drama.title.length > 25">...</span></p>
+          <p class="release">
+            Released: {{
+              new Date(drama.release_date).toLocaleDateString()
+            }}
+          </p>
+          <NuxtLink class="button button-light" :to="{name: 'movies-id', params:{id: drama.id}}">
+          Get More Info</NuxtLink>
+        </div>
+      </div>
+    </div>
   </div>
   </div>
 </template>
@@ -64,6 +87,8 @@ export default {
   data(){
     return{
       movies:[],
+      dramas: [],
+
       showMovies:true,
       searchInput: '',
       searchedMovies: [], 
@@ -71,12 +96,17 @@ export default {
     }
   },
   async fetch(){
-    this.searchInput === '' ? await this.getMovies() : await this.searchMovie()   
+    this.searchInput === '' ? await this.getMovies() : await this.searchMovie()  
+    await this.getDramas() 
   },  
   methods:{
     async getMovies(){
       const data = await axios.get('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=804a74ac9a1ab71039c990f01ef39b23&page=1')
       this.movies = data.data.results
+    },
+    async getDramas(){
+      const data = await axios.get('https://api.themoviedb.org/3/discover/movie?with_genres=18&sort_by=vote_average.desc&vote_count.gte=10&api_key=804a74ac9a1ab71039c990f01ef39b23&page=1')
+      this.dramas = data.data.results
     },
     async searchMovie(){
       const data = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=804a74ac9a1ab71039c990f01ef39b23&query=${this.searchInput}`)
@@ -89,7 +119,7 @@ export default {
       this.showMovies = true
       this.showSearchedMovies = false
     }
-  },
+    },
   }
 }
 </script>
